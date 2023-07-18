@@ -33,7 +33,16 @@ public class CameraMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 move = new(moveVector.x, 0f, moveVector.y);
-        transform.position += moveSpeed * Time.deltaTime * move;
+        Vector3 forward = Camera.main.transform.forward;
+        Vector3 right = Camera.main.transform.right;
+
+        forward.y = 0f; // Set the y-component to zero so that movement stays on the XZ plane.
+        right.y = 0f;   // Set the y-component to zero to maintain horizontal movement.
+
+        forward.Normalize();
+        right.Normalize();
+
+        Vector3 moveDirection = forward * moveVector.y + right * moveVector.x;
+        transform.position += moveSpeed * Time.deltaTime * moveDirection;
     }
 }
