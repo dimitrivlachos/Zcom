@@ -7,15 +7,18 @@ public class CameraController : MonoBehaviour
     private Vector2 moveVector = Vector2.zero;
     private Vector2 zoomRotateVector = Vector2.zero;
 
+    [SerializeField] private float minZoomDistance = 5f;
+    [SerializeField] private float maxZoomDistance = 50f;
+
     /*
      * The target is the position that the camera track will look at.
      * It is public so that the camera track can access it.
      */
     [HideInInspector] public Vector3 target;
 
-    public float moveSpeed = 25f; // Range of 1 to 100, default of 25
-    public float rotateSpeed = 50f; // Range of 1 to 100, default of 50
-    public float zoomSpeed = 50f; // Range of 1 to 100, default of 25
+    [SerializeField] private float moveSpeed = 25f; // Range of 1 to 100, default of 25
+    [SerializeField] private float rotateSpeed = 50f; // Range of 1 to 100, default of 50
+    [SerializeField] private float zoomSpeed = 50f; // Range of 1 to 100, default of 25
 
     private void Awake()
     {
@@ -89,6 +92,19 @@ public class CameraController : MonoBehaviour
         float zoomAmount = zoomRotateVector.y;
 
         Vector3 zoomVector = mainCamera.transform.forward * zoomAmount;
+
+        // Calculate camera's new position
+        Vector3 newCameraPos = mainCamera.transform.position;
+        newCameraPos += Time.deltaTime * zoomSpeed * zoomVector;
+
+        // Calculate distance to new position
+        float projectedDistance = Vector3.Distance(newCameraPos, transform.position);
+
+        // Guard statements to keep zoom within bounds
+        if (projectedDistance < minZoomDistance) return;
+        if (projectedDistance > maxZoomDistance) return;
+
+        // If we make it past the guard statements, then move the camera
         mainCamera.transform.position += Time.deltaTime * zoomSpeed * zoomVector;
     }
 

@@ -4,12 +4,33 @@ using UnityEditor;
 [CustomEditor(typeof(CameraController))]
 public class CameraControllerEditor : Editor
 {
+    private SerializedProperty moveSpeedProp;
+    private SerializedProperty rotateSpeedProp;
+    private SerializedProperty zoomSpeedProp;
+    private SerializedProperty minZoomDistanceProp;
+    private SerializedProperty maxZoomDistanceProp;
+
+    private void OnEnable()
+    {
+        moveSpeedProp = serializedObject.FindProperty("moveSpeed");
+        rotateSpeedProp = serializedObject.FindProperty("rotateSpeed");
+        zoomSpeedProp = serializedObject.FindProperty("zoomSpeed");
+        minZoomDistanceProp = serializedObject.FindProperty("minZoomDistance");
+        maxZoomDistanceProp = serializedObject.FindProperty("maxZoomDistance");
+    }
+
     public override void OnInspectorGUI()
     {
-        CameraController cameraController = (CameraController)target;
-        cameraController.moveSpeed = EditorGUILayout.Slider("Move Speed", cameraController.moveSpeed, 1f, 100f);
-        cameraController.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", cameraController.rotateSpeed, 1f, 100f);
-        cameraController.zoomSpeed = EditorGUILayout.Slider("Zoom Speed", cameraController.zoomSpeed, 1f, 100f);
+        serializedObject.Update();
+
+        EditorGUILayout.Slider(moveSpeedProp, 1f, 100f, "Move Speed");
+        EditorGUILayout.Slider(rotateSpeedProp, 1f, 100f, "Rotate Speed");
+        EditorGUILayout.Slider(zoomSpeedProp, 1f, 100f, "Zoom Speed");
+
+        EditorGUILayout.PropertyField(minZoomDistanceProp);
+        EditorGUILayout.PropertyField(maxZoomDistanceProp);
+
+        serializedObject.ApplyModifiedProperties();
     }
 }
 #endif
