@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-public class CameraMovement : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     private Controls input = null;
     private Vector2 moveVector = Vector2.zero;
