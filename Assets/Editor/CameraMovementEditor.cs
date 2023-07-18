@@ -8,6 +8,7 @@ public class CameraMovementEditor : Editor
     {
         CameraMovement cameraMovement = (CameraMovement)target;
         cameraMovement.moveSpeed = EditorGUILayout.Slider("Move Speed", cameraMovement.moveSpeed, 1f, 25f);
+        cameraMovement.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", cameraMovement.rotateSpeed, 1f, 25f);
     }
 }
 #endif

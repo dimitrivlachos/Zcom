@@ -6,7 +6,10 @@ public class CameraMovement : MonoBehaviour
     private Controls input = null;
     private Vector2 moveVector = Vector2.zero;
 
+    [HideInInspector] public float targetY = 0f; // Target y-position of the camera
+
     public float moveSpeed = 5f; // Range of 1 to 25, default of 5
+    public float rotateSpeed = 5f; // Range of 1 to 25, default of 5
 
     private void Awake()
     {
