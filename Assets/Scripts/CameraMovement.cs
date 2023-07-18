@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,7 +8,14 @@ public class CameraMovement : MonoBehaviour
 {
     private Controls input = null;
     private Vector2 moveVector = Vector2.zero;
-    [SerializeField] private float moveSpeed = 5f; // [SerializeField] allows private variables to be shown in the inspector
+
+    [SerializeField, Range(1f,25f)] private float moveSpeed = 5f; // Range of 1 to 25, default of 5
+
+    private void OnInspectorGUI()
+    {
+        // Create a slider for the moveSpeed variable
+        moveSpeed = EditorGUILayout.Slider("Move Speed", moveSpeed, 1f, 25f);
+    }
 
     private void Awake()
     {
