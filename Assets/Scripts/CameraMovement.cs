@@ -7,6 +7,7 @@ public class CameraMovement : MonoBehaviour
 {
     private Controls input = null;
     private Vector2 moveVector = Vector2.zero;
+    [SerializeField] private float moveSpeed = 5f; // [SerializeField] allows private variables to be shown in the inspector
 
     private void Awake()
     {
@@ -15,31 +16,25 @@ public class CameraMovement : MonoBehaviour
 
     private void OnEnable()
     {
+        // Enable input
         input.Enable();
-        input.Camera.Movement.performed += ctx => OnMovementPerformed(ctx);
-        input.Camera.Movement.canceled += ctx => OnMovementCancelled(ctx);
+        // Add event listeners for movement
+        input.Camera.Movement.performed += ctx => moveVector = ctx.ReadValue<Vector2>(); // Read value of movement vector and store it
+        input.Camera.Movement.canceled += ctx => moveVector = Vector2.zero; // Reset movement vector to zero
     }
 
     private void OnDisable()
     {
+        // Disable input
         input.Disable();
-        input.Camera.Movement.performed -= ctx => OnMovementPerformed(ctx);
-        input.Camera.Movement.canceled -= ctx => OnMovementCancelled(ctx);
+        // Remove event listeners for movement
+        input.Camera.Movement.performed -= ctx => moveVector = ctx.ReadValue<Vector2>(); // Read value of movement vector and store it
+        input.Camera.Movement.canceled -= ctx => moveVector = Vector2.zero; // Reset movement vector to zero
     }
 
     private void FixedUpdate()
     {
-        Vector3 move = new Vector3(moveVector.x, 0f, moveVector.y);
-        transform.position += move * Time.deltaTime;
-    }
-
-    private void OnMovementPerformed(InputAction.CallbackContext value)
-    {
-        moveVector = value.ReadValue<Vector2>();
-    }
-
-    private void OnMovementCancelled(InputAction.CallbackContext value)
-    {
-        moveVector = Vector2.zero;
+        Vector3 move = new(moveVector.x, 0f, moveVector.y);
+        transform.position += moveSpeed * Time.deltaTime * move;
     }
 }
