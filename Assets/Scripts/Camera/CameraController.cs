@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float maxZoomDistance = 50f;   // Range of 1 to 100, default of 50
     [SerializeField] private float moveSpeed = 25f;         // Range of 1 to 100, default of 25
     [SerializeField] private float rotateSpeed = 75f;       // Range of 1 to 100, default of 75
-    [SerializeField] private float zoomSpeed = 50f;         // Range of 1 to 100, default of 50
+    [SerializeField] private float zoomSpeed = 1f;          // Range of 1 to 10, default of 1
     [SerializeField] private float mouseZoomSpeed = 5f;     // Range of 1 to 10, default of 1
     [SerializeField] private float minZoomAngle = 30f;      // Range of 10 to 30, default of 30
     [SerializeField] private float maxZoomAngle = 45f;      // Range of 30 to 60, default of 45
@@ -164,7 +164,7 @@ public class CameraController : MonoBehaviour
 
         // Calculate camera's new position
         Vector3 newCameraPos = mainCamera.transform.position;
-        newCameraPos += Time.deltaTime * zoomSpeed * zoomVector;
+        newCameraPos += zoomSpeed * zoomVector;
 
         // Calculate distance to new position
         float projectedDistance = Vector3.Distance(newCameraPos, transform.position);
