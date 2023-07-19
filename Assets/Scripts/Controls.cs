@@ -44,6 +44,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Fast Pan"",
+                    ""type"": ""Button"",
+                    ""id"": ""f5cc78d2-1e30-4c16-bf3c-16ced0bc6b71"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -321,6 +330,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""ZoomRotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c7c79b6b-7d1b-4134-b493-91a45b361d23"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fast Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e073f99c-9f56-4a16-8de8-5ee164f7fbf5"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fast Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -331,6 +362,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
         m_Camera_Movement = m_Camera.FindAction("Movement", throwIfNotFound: true);
         m_Camera_ZoomRotate = m_Camera.FindAction("ZoomRotate", throwIfNotFound: true);
+        m_Camera_FastPan = m_Camera.FindAction("Fast Pan", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -394,12 +426,14 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
     private readonly InputAction m_Camera_Movement;
     private readonly InputAction m_Camera_ZoomRotate;
+    private readonly InputAction m_Camera_FastPan;
     public struct CameraActions
     {
         private @Controls m_Wrapper;
         public CameraActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Camera_Movement;
         public InputAction @ZoomRotate => m_Wrapper.m_Camera_ZoomRotate;
+        public InputAction @FastPan => m_Wrapper.m_Camera_FastPan;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -415,6 +449,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ZoomRotate.started += instance.OnZoomRotate;
             @ZoomRotate.performed += instance.OnZoomRotate;
             @ZoomRotate.canceled += instance.OnZoomRotate;
+            @FastPan.started += instance.OnFastPan;
+            @FastPan.performed += instance.OnFastPan;
+            @FastPan.canceled += instance.OnFastPan;
         }
 
         private void UnregisterCallbacks(ICameraActions instance)
@@ -425,6 +462,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ZoomRotate.started -= instance.OnZoomRotate;
             @ZoomRotate.performed -= instance.OnZoomRotate;
             @ZoomRotate.canceled -= instance.OnZoomRotate;
+            @FastPan.started -= instance.OnFastPan;
+            @FastPan.performed -= instance.OnFastPan;
+            @FastPan.canceled -= instance.OnFastPan;
         }
 
         public void RemoveCallbacks(ICameraActions instance)
@@ -446,5 +486,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnZoomRotate(InputAction.CallbackContext context);
+        void OnFastPan(InputAction.CallbackContext context);
     }
 }
