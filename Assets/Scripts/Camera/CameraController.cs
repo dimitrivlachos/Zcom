@@ -106,16 +106,16 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleMovement();
-        HandleZoom();
-        HandleRotation();
+        HandleCompositeMovement();
+        HandleCompositeZoom();
+        HandleCompositeRotation();
         
         HandleMousePan();
         HandleMouseZoom();
         HandleMouseRotation();
     }
 
-    private void HandleMovement()
+    private void HandleCompositeMovement()
     {
         Vector3 forward = mainCamera.transform.forward;
         Vector3 right = mainCamera.transform.right;
@@ -130,10 +130,33 @@ public class CameraController : MonoBehaviour
         transform.position += moveSpeed * Time.deltaTime * moveDirection;
     }
 
-    private void HandleZoom()
+    private void HandleCompositeZoom()
     {
         float zoomAmount = zoomRotateVector.y;
 
+        HandleZoomInternal(zoomAmount);
+    }
+
+    private void HandleMouseZoom()
+    {
+        // Get the scroll amount
+        float zoomAmount = Input.mouseScrollDelta.y * mouseZoomSpeed;
+
+        // Handle zoom functionality and return if we can't zoom
+        if (!HandleZoomInternal(zoomAmount)) return;
+
+        // Position on the ground we are scrolling towards
+        Vector3 zoomTarget = ScreenToGroundRay();
+
+        // Vector from camera rig to target
+        Vector3 targetVector = Vector3.Normalize(zoomTarget - transform.position) * zoomAmount;
+
+        // Move transform towards the target
+        transform.position += targetVector;
+    }
+
+    private bool HandleZoomInternal(float zoomAmount)
+    {
         // Vector from camera to target
         Vector3 zoomVector = Vector3.Normalize(target - mainCamera.transform.position) * zoomAmount;
 
@@ -145,48 +168,8 @@ public class CameraController : MonoBehaviour
         float projectedDistance = Vector3.Distance(newCameraPos, transform.position);
 
         // Guard statements
-        if (projectedDistance < minZoomDistance) return;
-        if (projectedDistance > maxZoomDistance) return;
-
-        // Calculate the clamped distance for zoom
-        float clampedDistance = Mathf.Clamp(projectedDistance, minZoomDistance, maxZoomDistance);
-
-        // Calculate the ratio of how far we have zoomed between the minZoomDistance and maxZoomDistance
-        float zoomRatio = (clampedDistance - minZoomDistance) / (maxZoomDistance - minZoomDistance);
-
-        // Calculate the pitch (up and down rotation) based on the zoomRatio
-        float pitchAngle = ExponentialInterpolation(30f, 45f, zoomRatio);
-
-        // Apply the pitch rotation to the camera's transform
-        pitch = pitchAngle;
-
-        // Move the camera to the new position
-        mainCamera.transform.position = newCameraPos;
-    }
-
-    private void HandleMouseZoom()
-    {
-        // Get the scroll amount
-        float scrollAmount = Input.mouseScrollDelta.y * mouseZoomSpeed;
-
-        // Position on the ground we are scrolling towards
-        Vector3 zoomTarget = ScreenToGroundRay();
-
-        Vector3 targetVector = Vector3.Normalize(zoomTarget - transform.position) * scrollAmount;
-
-        // Vector from camera to target
-        Vector3 zoomVector = Vector3.Normalize(target - mainCamera.transform.position) * scrollAmount;
-
-        // Calculate camera's new position
-        Vector3 newCameraPos = mainCamera.transform.position;
-        newCameraPos += Time.deltaTime * zoomSpeed * zoomVector;
-
-        // Calculate distance to new position
-        float projectedDistance = Vector3.Distance(newCameraPos, transform.position);
-
-        // Guard statements
-        if (projectedDistance < minZoomDistance) return;
-        if (projectedDistance > maxZoomDistance) return;
+        if (projectedDistance < minZoomDistance) return false;
+        if (projectedDistance > maxZoomDistance) return false;
 
         // Calculate the clamped distance for zoom
         float clampedDistance = Mathf.Clamp(projectedDistance, minZoomDistance, maxZoomDistance);
@@ -203,11 +186,10 @@ public class CameraController : MonoBehaviour
         // Move the camera to the new position
         mainCamera.transform.position = newCameraPos;
 
-        // Move transform towards the target
-        transform.position += targetVector;
+        return true;
     }
 
-    private void HandleRotation()
+    private void HandleCompositeRotation()
     {
         // Rotate transform
         float rotation = zoomRotateVector.x;
