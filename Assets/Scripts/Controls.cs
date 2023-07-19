@@ -44,6 +44,42 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Fast Pan"",
+                    ""type"": ""Button"",
+                    ""id"": ""f5cc78d2-1e30-4c16-bf3c-16ced0bc6b71"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseRotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""8ab9fc1b-5e6e-4dc8-b467-27f3405db266"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MousePan"",
+                    ""type"": ""Button"",
+                    ""id"": ""14c49b98-7082-4e38-b645-dd116107cd87"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseZoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""5ecf31ff-7536-4d40-bfd2-a18d179bd528"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -321,6 +357,61 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""ZoomRotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c7c79b6b-7d1b-4134-b493-91a45b361d23"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fast Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e073f99c-9f56-4a16-8de8-5ee164f7fbf5"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fast Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""268f5472-6810-42cb-a32e-d01f34319833"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""410d76bc-7cc2-471e-aadb-4121b807384a"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bb9511ce-6f60-4739-8101-53a545c0f844"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseZoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -331,6 +422,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
         m_Camera_Movement = m_Camera.FindAction("Movement", throwIfNotFound: true);
         m_Camera_ZoomRotate = m_Camera.FindAction("ZoomRotate", throwIfNotFound: true);
+        m_Camera_FastPan = m_Camera.FindAction("Fast Pan", throwIfNotFound: true);
+        m_Camera_MouseRotate = m_Camera.FindAction("MouseRotate", throwIfNotFound: true);
+        m_Camera_MousePan = m_Camera.FindAction("MousePan", throwIfNotFound: true);
+        m_Camera_MouseZoom = m_Camera.FindAction("MouseZoom", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -394,12 +489,20 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
     private readonly InputAction m_Camera_Movement;
     private readonly InputAction m_Camera_ZoomRotate;
+    private readonly InputAction m_Camera_FastPan;
+    private readonly InputAction m_Camera_MouseRotate;
+    private readonly InputAction m_Camera_MousePan;
+    private readonly InputAction m_Camera_MouseZoom;
     public struct CameraActions
     {
         private @Controls m_Wrapper;
         public CameraActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Camera_Movement;
         public InputAction @ZoomRotate => m_Wrapper.m_Camera_ZoomRotate;
+        public InputAction @FastPan => m_Wrapper.m_Camera_FastPan;
+        public InputAction @MouseRotate => m_Wrapper.m_Camera_MouseRotate;
+        public InputAction @MousePan => m_Wrapper.m_Camera_MousePan;
+        public InputAction @MouseZoom => m_Wrapper.m_Camera_MouseZoom;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -415,6 +518,18 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ZoomRotate.started += instance.OnZoomRotate;
             @ZoomRotate.performed += instance.OnZoomRotate;
             @ZoomRotate.canceled += instance.OnZoomRotate;
+            @FastPan.started += instance.OnFastPan;
+            @FastPan.performed += instance.OnFastPan;
+            @FastPan.canceled += instance.OnFastPan;
+            @MouseRotate.started += instance.OnMouseRotate;
+            @MouseRotate.performed += instance.OnMouseRotate;
+            @MouseRotate.canceled += instance.OnMouseRotate;
+            @MousePan.started += instance.OnMousePan;
+            @MousePan.performed += instance.OnMousePan;
+            @MousePan.canceled += instance.OnMousePan;
+            @MouseZoom.started += instance.OnMouseZoom;
+            @MouseZoom.performed += instance.OnMouseZoom;
+            @MouseZoom.canceled += instance.OnMouseZoom;
         }
 
         private void UnregisterCallbacks(ICameraActions instance)
@@ -425,6 +540,18 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ZoomRotate.started -= instance.OnZoomRotate;
             @ZoomRotate.performed -= instance.OnZoomRotate;
             @ZoomRotate.canceled -= instance.OnZoomRotate;
+            @FastPan.started -= instance.OnFastPan;
+            @FastPan.performed -= instance.OnFastPan;
+            @FastPan.canceled -= instance.OnFastPan;
+            @MouseRotate.started -= instance.OnMouseRotate;
+            @MouseRotate.performed -= instance.OnMouseRotate;
+            @MouseRotate.canceled -= instance.OnMouseRotate;
+            @MousePan.started -= instance.OnMousePan;
+            @MousePan.performed -= instance.OnMousePan;
+            @MousePan.canceled -= instance.OnMousePan;
+            @MouseZoom.started -= instance.OnMouseZoom;
+            @MouseZoom.performed -= instance.OnMouseZoom;
+            @MouseZoom.canceled -= instance.OnMouseZoom;
         }
 
         public void RemoveCallbacks(ICameraActions instance)
@@ -446,5 +573,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnZoomRotate(InputAction.CallbackContext context);
+        void OnFastPan(InputAction.CallbackContext context);
+        void OnMouseRotate(InputAction.CallbackContext context);
+        void OnMousePan(InputAction.CallbackContext context);
+        void OnMouseZoom(InputAction.CallbackContext context);
     }
 }
