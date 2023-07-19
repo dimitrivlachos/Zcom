@@ -22,6 +22,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float rotateSpeed = 75f;       // Range of 1 to 100, default of 75
     [SerializeField] private float zoomSpeed = 50f;         // Range of 1 to 100, default of 50
     [SerializeField] private float mouseZoomSpeed = 5f;     // Range of 1 to 10, default of 1
+    [SerializeField] private float minZoomAngle = 30f;      // Range of 10 to 30, default of 30
+    [SerializeField] private float maxZoomAngle = 45f;      // Range of 30 to 60, default of 45
 
     /*
      * The target is the position that the camera track will look at.
@@ -178,7 +180,7 @@ public class CameraController : MonoBehaviour
         float zoomRatio = (clampedDistance - minZoomDistance) / (maxZoomDistance - minZoomDistance);
 
         // Calculate the pitch (up and down rotation) based on the zoomRatio
-        float pitchAngle = ExponentialInterpolation(30f, 45f, zoomRatio);
+        float pitchAngle = ExponentialInterpolation(minZoomAngle, maxZoomAngle, zoomRatio);
 
         // Apply the pitch rotation to the camera's transform
         pitch = pitchAngle;
