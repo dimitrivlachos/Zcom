@@ -2,24 +2,29 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    // Private class variables
     private Camera mainCamera;
     private Controls input = null;
     private Vector2 moveVector = Vector2.zero;
     private Vector2 zoomRotateVector = Vector2.zero;
+    private Vector3 dragStartPosition;      // The position of the mouse when the drag starts
+    private Vector3 dragCurrentPosition;    // The position of the mouse as it is dragged
 
-    [SerializeField] private float minZoomDistance = 5f;
-    [SerializeField] private float maxZoomDistance = 50f;
+    // Camera settings
+    [SerializeField] private float minZoomDistance = 5f;    // Range of 1 to 100, default of 5
+    [SerializeField] private float maxZoomDistance = 50f;   // Range of 1 to 100, default of 50
+    [SerializeField] private float moveSpeed = 25f;         // Range of 1 to 100, default of 25
+    [SerializeField] private float rotateSpeed = 50f;       // Range of 1 to 100, default of 50
+    [SerializeField] private float zoomSpeed = 50f;         // Range of 1 to 100, default of 50
 
     /*
      * The target is the position that the camera track will look at.
-     * It is public so that the camera track can access it.
+     * The pitch is the up and down rotation of the camera.
+     * These are public so that script can access them.
+     * We use HideInInspector so that they don't show up in the inspector.
      */
     [HideInInspector] public Vector3 target;
     [HideInInspector] public float pitch;
-
-    [SerializeField] private float moveSpeed = 25f; // Range of 1 to 100, default of 25
-    [SerializeField] private float rotateSpeed = 50f; // Range of 1 to 100, default of 50
-    [SerializeField] private float zoomSpeed = 50f; // Range of 1 to 100, default of 25
 
     private void Awake()
     {
