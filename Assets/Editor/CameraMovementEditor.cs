@@ -28,7 +28,7 @@ public class CameraControllerEditor : Editor
         EditorGUILayout.Slider(moveSpeedProp, 1f, 100f, "Move Speed");
         EditorGUILayout.Slider(rotateSpeedProp, 1f, 100f, "Rotate Speed");
         EditorGUILayout.Slider(zoomSpeedProp, 1f, 100f, "Zoom Speed");
-        EditorGUILayout.Slider(mouseZoomSpeed, 1f, 100f, "Mouse Zoom Speed");
+        EditorGUILayout.Slider(mouseZoomSpeed, 1f, 10f, "Mouse Zoom Speed");
 
         EditorGUILayout.PropertyField(minZoomDistanceProp);
         EditorGUILayout.PropertyField(maxZoomDistanceProp);

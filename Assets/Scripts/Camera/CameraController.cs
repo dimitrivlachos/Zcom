@@ -19,9 +19,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float minZoomDistance = 5f;    // Range of 1 to 100, default of 5
     [SerializeField] private float maxZoomDistance = 50f;   // Range of 1 to 100, default of 50
     [SerializeField] private float moveSpeed = 25f;         // Range of 1 to 100, default of 25
-    [SerializeField] private float rotateSpeed = 50f;       // Range of 1 to 100, default of 50
+    [SerializeField] private float rotateSpeed = 75f;       // Range of 1 to 100, default of 75
     [SerializeField] private float zoomSpeed = 50f;         // Range of 1 to 100, default of 50
-    [SerializeField] private float mouseZoomSpeed = 5f;     // Range of 1 to 100, default of 5
+    [SerializeField] private float mouseZoomSpeed = 5f;     // Range of 1 to 10, default of 1
 
     /*
      * The target is the position that the camera track will look at.
